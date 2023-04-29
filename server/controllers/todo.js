@@ -138,5 +138,5 @@ export const completed = async (req, res, next) => {
 
   await todo.updateOne({ completed: true });
 
-  res.json({ message: todo });
+  res.json({ message: "updated as completed" });
 };

@@ -10,7 +10,7 @@ router.post(
     check("name").not().isEmpty(),
     check("email").normalizeEmail().isEmail(),
     check("password").isLength({ min: 6 }),
-    check("photo").not().isEmpty(),
+    check("userPhoto").not().isEmpty(),
   ],
   createUser
 );

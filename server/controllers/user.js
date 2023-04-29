@@ -1,19 +1,8 @@
 import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import * as dotenv from "dotenv";
-import { v2 as cloudinary } from "cloudinary";
-
 import { User } from "../mongodb/schema/user.js";
 import { HttpError } from "../utils/HttpError.js";
-
-dotenv.config();
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 export const createUser = async (req, res, next) => {
   const errors = validationResult(req);
@@ -22,17 +11,14 @@ export const createUser = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
-  const { name, email, photo, password } = req.body;
+  const { name, email, userPhoto, password } = req.body;
 
   let existingUser;
 
   try {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
-    const error = new HttpError(
-      "Signing up failed, please try again later.",
-      500
-    );
+    const error = new HttpError("Signing up failed, please again later.", 500);
     return next(error);
   }
 
@@ -40,7 +26,6 @@ export const createUser = async (req, res, next) => {
     const error = new HttpError("User exist already, please login.", 422);
     return next(error);
   }
-  // const photoUrl = await cloudinary.uploader.upload(photo);
   const saltRounds = 10;
   const salt = bcrypt.genSaltSync(saltRounds);
   const hashPassword = bcrypt.hashSync(password, salt);
@@ -48,7 +33,7 @@ export const createUser = async (req, res, next) => {
   const createdUser = new User({
     name,
     email,
-    userPhoto: photo,
+    userPhoto,
     password: hashPassword,
     todos: [],
   });
@@ -61,6 +46,8 @@ export const createUser = async (req, res, next) => {
     process.env.SECRET,
     { expiresIn: "1h" }
   );
+
+  console.log(createdUser);
 
   try {
     await createdUser.save();
@@ -93,6 +80,7 @@ export const loginUser = async (req, res, next) => {
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
+    console.log(existingUser);
   } catch (err) {
     const error = new HttpError(
       "Signing up failed, please try again later.",
@@ -101,10 +89,17 @@ export const loginUser = async (req, res, next) => {
     return next(error);
   }
 
-  const comparyPassword = bcrypt.compareSync(password, existingUser.password);
-  console.log(comparyPassword);
+  if (!existingUser) {
+    const error = new HttpError(
+      "User Doesn't exist,check the credentials",
+      500
+    );
+    return next(error);
+  }
 
-  if (!existingUser || comparyPassword) {
+  const comparyPassword = bcrypt.compareSync(password, existingUser.password);
+
+  if (!existingUser || !comparyPassword) {
     return next(
       new HttpError(
         "Could not identify user, credentials seem to be wrong.",
