@@ -47,7 +47,6 @@ export const createUser = async (req, res, next) => {
     { expiresIn: "1h" }
   );
 
-  console.log(createdUser);
 
   try {
     await createdUser.save();
@@ -80,7 +79,6 @@ export const loginUser = async (req, res, next) => {
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
-    console.log(existingUser);
   } catch (err) {
     const error = new HttpError(
       "Signing up failed, please try again later.",

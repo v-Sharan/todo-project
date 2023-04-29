@@ -21,8 +21,8 @@ export const authSlice = createSlice({
       state.isLogin = false;
       state.userId = null;
       state.token = null;
-      localStorage.removeItem("userId", state.userId);
-      localStorage.removeItem("token", state.token);
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
     },
   },
 });

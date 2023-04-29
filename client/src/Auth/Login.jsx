@@ -1,14 +1,44 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const Login = () => {
+import { useDispatch } from "react-redux";
+import { Login } from "../store/authSlice";
+
+const LoginPage = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleChange = ({ target }) => {
+    setForm({ ...form, [target.name]: target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    axios
+      .post("http://localhost:8080/api/users/login", form)
+      .then((res) => {
+        console.log(res.data);
+        dispatch(Login({ userId: res.data.user._id, token: res.data.token }));
+        navigate("/");
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <section className="flex items-center justify-center h-[100vh] min-h-screen bg-center bg-no-repeat bg-[url('https://res.cloudinary.com/dfje97i0k/image/upload/c_scale,h_1200,w_1500/v1680861064/checklist-check-list-marker_s1mwyu.jpg')] bg-gray-700 bg-blend-multiply">
       <div className="max-w-screen-xl text-center py-10 lg:py-14">
         <div className="w-full my-auto mx-auto max-w-sm px-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
-          <form onSubmit={() => {}} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <h5 className="text-xl font-medium text-gray-900 dark:text-white">
               Login to our platform
             </h5>
@@ -25,7 +55,7 @@ const Login = () => {
                 id="email"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 placeholder="ex: name@company.com"
-                onChange={() => {}}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -43,7 +73,7 @@ const Login = () => {
                 placeholder="••••••••"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 required
-                onChange={() => {}}
+                onChange={handleChange}
               />
             </div>
             <div className="flex items-start">
@@ -103,4 +133,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
