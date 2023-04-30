@@ -47,7 +47,6 @@ export const createUser = async (req, res, next) => {
     { expiresIn: "1h" }
   );
 
-
   try {
     await createdUser.save();
   } catch (err) {
@@ -107,4 +106,38 @@ export const loginUser = async (req, res, next) => {
   }
 
   res.json({ user: existingUser, token: token });
+};
+
+export const getUserByID = async (req, res, next) => {
+  const { userId } = req.params;
+
+  let existingUser;
+  try {
+    existingUser = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(
+      "Signing up failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!existingUser) {
+    const error = new HttpError(
+      "User Doesn't exist,check the credentials",
+      500
+    );
+    return next(error);
+  }
+
+  if (!existingUser) {
+    return next(
+      new HttpError(
+        "Could not identify user, credentials seem to be wrong.",
+        401
+      )
+    );
+  }
+
+  res.json({ user: existingUser });
 };

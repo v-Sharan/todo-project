@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 
 import { ConnectDB } from "./mongodb/connect.js";
+import { sessionToken } from "./middleware/CheckJwtToken.js";
 import UserRoutes from "./routes/user.js";
 import TodoRouters from "./routes/todo.js";
 
@@ -14,7 +15,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
-  
+
 app.post("/", async (req, res, next) => {
   const { token } = req.body;
   try {

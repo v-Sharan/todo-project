@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { useDispatch } from "react-redux";
 import { Login } from "../store/authSlice";
+import { UserData } from "../store/userSlice";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -24,8 +25,8 @@ const LoginPage = () => {
     axios
       .post("http://localhost:8080/api/users/login", form)
       .then((res) => {
-        console.log(res.data);
         dispatch(Login({ userId: res.data.user._id, token: res.data.token }));
+        dispatch(UserData({ user: res.data.user }));
         navigate("/");
       })
       .catch((err) => console.log(err))

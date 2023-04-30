@@ -26,7 +26,6 @@ const SignIn = () => {
     axios
       .post("http://localhost:8080/api/users/signup", form)
       .then((res) => {
-        console.log(res.data);
         dispatch(Login({ userId: res.data.user._id, token: res.data.token }));
       })
       .catch((err) => console.log(err))

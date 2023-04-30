@@ -4,24 +4,30 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
 import { LoginPage, SignIn } from "./Auth";
-import { Home } from "./contents";
+import { Navbar } from "./components";
+import { Home, Complete } from "./contents";
 import { Login } from "./store/authSlice";
 
 function App() {
   const { isLogin } = useSelector((state) => state.auth);
   const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (token) {
+    if (token && userId) {
       axios
-        .post("http://localhost:8080", token)
+        .post("http://localhost:8080", { token })
         .then((res) => {
-          // dispatch(Login({ userId: res.data._id }));
-          console.log(res.data);
+          if (res.data.login) {
+            dispatch(Login({ userId, token }));
+          }
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.data.login) {
+            localStorage.removeItem("userId");
+            localStorage.removeItem("token");
+          }
         });
     } else {
       console.log("no token found");
@@ -29,9 +35,13 @@ function App() {
   }, []);
 
   const route = isLogin ? (
-    <Routes>
-      <Route path="/" element={<Home />} />
-    </Routes>
+    <div className="bg-indigo-200 min-h-screen">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/complete" element={<Complete />} />
+      </Routes>
+    </div>
   ) : (
     <Routes>
       <Route path="/" element={<SignIn />} />
