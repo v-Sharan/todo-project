@@ -13,6 +13,19 @@ export const createUser = async (req, res, next) => {
   }
   const { name, email, userPhoto, password } = req.body;
 
+  if (password.trim().length <= 5) {
+    console.log(password.trim().length);
+    return next(new HttpError("Password must be six character", 422));
+  }
+
+  if (!email.includes("@")) {
+    return next(new HttpError("Enter a valid email", 422));
+  }
+
+  if (!userPhoto.startsWith("http")) {
+    return next(new HttpError("Check your photo link", 422));
+  }
+
   let existingUser;
 
   try {

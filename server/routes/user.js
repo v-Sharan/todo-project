@@ -8,8 +8,8 @@ router.post(
   "/signup",
   [
     check("name").not().isEmpty(),
-    check("email").normalizeEmail().isEmail(),
-    check("password").isLength({ min: 6 }),
+    check("email").not().isEmpty(),
+    check("password").not().isEmpty(),
     check("userPhoto").not().isEmpty(),
   ],
   createUser
