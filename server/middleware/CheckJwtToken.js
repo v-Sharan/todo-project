@@ -9,7 +9,6 @@ export const checkToken = (req, res, next) => {
 
   if (AuthToken && AuthToken.startsWith("Bearer")) {
     token = AuthToken.split(" ")[1];
-    console.log(token);
     jwt.verify(token, process.env.SECRET, function (err, decoded) {
       if (err) {
         return res.status(401).json({ message: "Invalid token." });

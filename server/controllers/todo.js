@@ -77,7 +77,7 @@ export const createTodo = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(201).json({ Todo: createdTodo });
+  res.status(201).json({ Todo: createdTodo,message:"Todo Added" });
 };
 
 export const deleteTodo = async (req, res, next) => {

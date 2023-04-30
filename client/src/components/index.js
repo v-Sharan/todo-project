@@ -1,5 +1,6 @@
 import Navbar from "./Navbar/NavBar";
-import Button from "./UI/Button";
 import TodoMap from "./TodoMap";
+import ErrorModel from "./UI/ErrorModel/ErrorModal";
+import Loader from "./UI/Loader";
 
-export { Navbar, Button, TodoMap };
+export { Navbar, TodoMap, ErrorModel, Loader };

@@ -29,8 +29,6 @@ function App() {
             localStorage.removeItem("token");
           }
         });
-    } else {
-      console.log("no token found");
     }
   }, []);
 

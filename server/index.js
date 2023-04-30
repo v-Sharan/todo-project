@@ -29,6 +29,12 @@ app.post("/", async (req, res, next) => {
 app.use("/api/users", UserRoutes);
 app.use("/api/todo", TodoRouters);
 
+app.use((error, req, res, next) => {
+  const status = error.status || 500;
+  const message = error.message || "Something went wrong.";
+  res.status(status).json({ message: message });
+});
+
 const startServer = () => {
   try {
     ConnectDB(process.env.MONGODB_URL);
