@@ -22,16 +22,16 @@ const CompleteTodo = () => {
   };
 
   const { todoData } = useTodoFetch(
-    `http://localhost:8080/api/todo/${user}`,
+    `https://todo-auth-i48l.onrender.com/api/todo/${user}`,
     options
   );
 
-  if (todoData.isError) {
+  if (todoData?.isError) {
     setError(todoData.error);
   }
 
   useEffect(() => {
-    if (!!todoData?.data?.data) {
+    if (!!todoData?.data?.data?.completed_todo) {
       dispatch(
         todoStore({
           completed_todo: todoData?.data?.data?.completed_todo,

@@ -11,7 +11,7 @@ const TodoMap = ({ title, completed, _id, refetch, options }) => {
   const [message, setMessage] = useState("");
   const handleComplete = () => {
     axios
-      .patch(`http://localhost:8080/api/todo/${_id}`, { data: "hi" }, options)
+      .patch(`https://todo-auth-i48l.onrender.com/api/todo/${_id}`, { data: "hi" }, options)
       .then((res) => {
         setMessage(res.data.message);
         setTimeout(() => {
@@ -24,7 +24,7 @@ const TodoMap = ({ title, completed, _id, refetch, options }) => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://localhost:8080/api/todo/${_id}`, options)
+      .delete(`https://todo-auth-i48l.onrender.com/api/todo/${_id}`, options)
       .then((res) => {
         setMessage(res.data.message);
         setTimeout(() => {

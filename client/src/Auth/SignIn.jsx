@@ -26,7 +26,7 @@ const SignIn = () => {
     e.preventDefault();
     setLoading(true);
     axios
-      .post("http://localhost:8080/api/users/signup", form)
+      .post("https://todo-auth-i48l.onrender.com/api/users/signup", form)
       .then((res) => {
         dispatch(Login({ userId: res.data.user._id, token: res.data.token }));
       })

@@ -24,13 +24,13 @@ const Home = () => {
   };
 
   const { todoData } = useTodoFetch(
-    `http://localhost:8080/api/todo/${user}`,
+    `https://todo-auth-i48l.onrender.com/api/todo/${user}`,
     options
   );
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/users/${user}`)
+      .get(`https://todo-auth-i48l.onrender.com/api/users/${user}`)
       .then((res) => {
         dispatch(UserData({ user: res.data.user }));
       })
@@ -50,7 +50,7 @@ const Home = () => {
     e.preventDefault();
     axios
       .post(
-        `http://localhost:8080/api/todo/${user}`,
+        `https://todo-auth-i48l.onrender.com/api/todo/${user}`,
         { title },
         {
           headers: {

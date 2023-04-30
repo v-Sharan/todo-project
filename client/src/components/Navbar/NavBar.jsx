@@ -17,7 +17,9 @@ const NavBar = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/users/${userDataRedux.userId}`)
+      .get(
+        `https://todo-auth-i48l.onrender.com/api/users/${userDataRedux.userId}`
+      )
       .then((res) => {
         dispatch(UserData({ user: res.data.user }));
       })
