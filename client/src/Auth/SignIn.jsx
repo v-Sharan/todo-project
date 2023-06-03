@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { useDispatch } from "react-redux";
 import { ErrorModel } from "../components";
 import { Login } from "../store/authSlice";
+import { Button } from "flowbite-react";
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -14,9 +15,22 @@ const SignIn = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [preview, setPreview] = useState();
   const [loading, setLoading] = useState(false);
+  const openref = useRef();
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!form.userPhoto) {
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreview(fileReader.result);
+    };
+    fileReader.readAsDataURL(form.userPhoto);
+  }, [form.userPhoto]);
 
   const handleChange = ({ target }) => {
     setForm({ ...form, [target.name]: target.value });
@@ -24,16 +38,17 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    axios
-      .post("https://todo-auth-i48l.onrender.com/api/users/signup", form)
-      .then((res) => {
-        dispatch(Login({ userId: res.data.user._id, token: res.data.token }));
-      })
-      .catch((err) => setError(err.response.data.message))
-      .finally(() => {
-        setLoading(false);
-      });
+    // setLoading(true);
+    // axios
+    //   .post("https://todo-auth-i48l.onrender.com/api/users/signup", form)
+    //   .then((res) => {
+    //     dispatch(Login({ userId: res.data.user._id, token: res.data.token }));
+    //   })
+    //   .catch((err) => setError(err.response.data.message))
+    //   .finally(() => {
+    //     setLoading(false);
+    //   });
+    console.log(form)
   };
 
   return (
@@ -44,10 +59,10 @@ const SignIn = () => {
           setError("");
         }}
       />
-      <section className="flex items-center justify-center h-[100vh] min-h-screen bg-center bg-no-repeat bg-[url('https://res.cloudinary.com/dfje97i0k/image/upload/c_scale,h_1200,w_1500/v1680861064/checklist-check-list-marker_s1mwyu.jpg')] bg-gray-700 bg-blend-multiply">
+      <section className="flex items-center justify-center h-[120vh] min-h-screen bg-center bg-no-repeat bg-[url('https://res.cloudinary.com/dfje97i0k/image/upload/c_scale,h_1200,w_1500/v1680861064/checklist-check-list-marker_s1mwyu.jpg')] bg-gray-700 bg-blend-multiply">
         <div className="w-[600px] text-center py-10 lg:py-14">
           <div className="w-full my-auto mx-auto max-w-lg px-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-2">
               <h5 className="text-xl font-medium text-gray-900 dark:text-white">
                 Sign up to our platform
               </h5>
@@ -92,15 +107,35 @@ const SignIn = () => {
                 >
                   Your Photo url
                 </label>
+                <div className="mx-auto flex justify-center items-center w-[50%] h-[20vh] border rounded-lg border-black mb-8">
+                  <img
+                    src={preview}
+                    alt="preview"
+                    className="w-[50%] h-[20vh]"
+                  />
+                </div>
                 <input
-                  type="text"
+                  ref={openref}
+                  type="file"
                   name="userPhoto"
                   id="userPhoto"
                   placeholder="ex: https://photo.com"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                  onChange={handleChange}
+                  className="hidden"
+                  accept="image/jpeg"
+                  onChange={({ target }) => {
+                    setForm({ ...form, userPhoto: target.files[0] });
+                  }}
                   required
                 />
+                <div className="flex justify-center">
+                  <Button
+                    onClick={() => {
+                      openref.current.click();
+                    }}
+                  >
+                    Upload Image
+                  </Button>
+                </div>
               </div>
               <div>
                 <label
